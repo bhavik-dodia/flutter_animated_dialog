@@ -77,6 +77,7 @@ Future<T?> showAnimatedDialog<T extends Object?>({
   Alignment alignment = Alignment.center,
   Color? barrierColor,
   Axis? axis = Axis.horizontal,
+  bool useSafeArea = true,
 }) {
   assert(debugCheckHasMaterialLocalizations(context));
 
@@ -88,12 +89,16 @@ Future<T?> showAnimatedDialog<T extends Object?>({
     pageBuilder: (BuildContext buildContext, Animation<double> animation,
         Animation<double> secondaryAnimation) {
       final Widget pageChild = Builder(builder: builder);
-      return SafeArea(
-        top: false,
-        child: Builder(builder: (BuildContext context) {
-          return Theme(data: theme, child: pageChild);
-        }),
-      );
+      return useSafeArea
+          ? SafeArea(
+              top: false,
+              child: Builder(builder: (BuildContext context) {
+                return Theme(data: theme, child: pageChild);
+              }),
+            )
+          : Builder(builder: (BuildContext context) {
+              return Theme(data: theme, child: pageChild);
+            });
     },
     barrierDismissible: barrierDismissible,
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
