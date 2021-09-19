@@ -74,6 +74,7 @@ Future<T> showAnimatedDialog<T>({
   animationType = DialogTransitionType.fade,
   Curve curve = Curves.linear,
   Duration duration,
+  bool useSafeArea = true,
   AlignmentGeometry alignment = Alignment.center,
   Axis axis,
 }) {
@@ -88,14 +89,20 @@ Future<T> showAnimatedDialog<T>({
     pageBuilder: (BuildContext buildContext, Animation<double> animation,
         Animation<double> secondaryAnimation) {
       final Widget pageChild = Builder(builder: builder);
-      return SafeArea(
-        top: false,
-        child: Builder(builder: (BuildContext context) {
-          return theme != null
-              ? Theme(data: theme, child: pageChild)
-              : pageChild;
-        }),
-      );
+      return useSafeArea
+          ? SafeArea(
+              top: false,
+              child: Builder(builder: (BuildContext context) {
+                return theme != null
+                    ? Theme(data: theme, child: pageChild)
+                    : pageChild;
+              }),
+            )
+          : Builder(builder: (BuildContext context) {
+              return theme != null
+                  ? Theme(data: theme, child: pageChild)
+                  : pageChild;
+            });
     },
     barrierDismissible: barrierDismissible,
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
